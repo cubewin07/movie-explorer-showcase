@@ -12,7 +12,7 @@ import { ReactLenis } from 'lenis/react'
 function App() {
   return (
     <ReactLenis root>
-      <main className="bg-slate-50 dark:bg-slate-950 min-h-screen text-slate-900 dark:text-slate-100 overflow-x-hidden">
+      <main className="bg-slate-50 dark:bg-slate-950 min-h-screen text-slate-900 dark:text-slate-100 overflow-clip">
         <Hero />
         <div id="features" className="space-y-32 pb-32">
            <Orientation />
