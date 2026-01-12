@@ -1,23 +1,40 @@
 import Section from "../Section";
+import { motion } from "framer-motion";
+import { Zap, Shield, Wifi, Smartphone } from "lucide-react";
+
+const FEATURES = [
+    { icon: Zap, title: "Lightning Fast", desc: "Optimized React performance with code-splitting and efficient rendering." },
+    { icon: Shield, title: "Secure", desc: "JWT Authentication and protected routes keep your data safe." },
+    { icon: Wifi, title: "Offline Ready", desc: "Graceful handling of network loss with local caching." },
+    { icon: Smartphone, title: "Responsive", desc: "A fluid experience across all devices, from mobile to desktop." }
+];
 
 export default function Resilience() {
   return (
-    <Section id="resilience" eyebrow="Resilience" heading="Offline transitions and recovery" act="resilience">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
-          <div className="flex items-center gap-3 rounded-xl border border-red-300/60 dark:border-red-900/60 bg-red-100/60 dark:bg-red-950/40 p-3 text-red-800 dark:text-red-300">
-            <span>⚠️</span>
-            <div>
-              <p className="font-semibold">You are offline</p>
-              <p className="text-sm">Messages queue until reconnection restores flow.</p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Error banners, retry and disabled states map to the production chat logic.
-          </p>
-        </div>
+    <Section 
+      id="resilience" 
+      eyebrow="Technical Excellence" 
+      heading="Engineered for reliability"
+    >
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {FEATURES.map((feature, i) => (
+            <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="flex flex-col items-center text-center p-6 rounded-3xl bg-slate-100 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-800 transition-colors"
+            >
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white mb-6 shadow-lg shadow-indigo-500/20">
+                    <feature.icon className="w-7 h-7" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">{feature.title}</h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
+                    {feature.desc}
+                </p>
+            </motion.div>
+        ))}
       </div>
     </Section>
   );

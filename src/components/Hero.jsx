@@ -1,92 +1,152 @@
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { ArrowRight, PlayCircle, MessageCircle, Star } from "lucide-react";
+import MockMovieCard from "./ui/MockMovieCard";
+import MockChatInterface from "./ui/MockChatInterface";
 
 export default function Hero() {
-  const MLink = motion.a;
-  const ctaHref =
-    import.meta.env.MODE === "development"
-      ? "http://localhost:5173/"
-      : "https://cubewin07.github.io/movie-explorer";
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
+  const y2 = useTransform(scrollY, [0, 500], [0, -150]);
+  
+  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+
   return (
-    <section className="py-20">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/60 dark:border-slate-800/60 shadow-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-8 lg:p-12">
-            <div className="flex flex-col gap-5">
-              <div className="hero-badge inline-flex items-center gap-3 px-3 py-2 rounded-full border border-slate-200/60 dark:border-slate-700/60 bg-slate-50/70 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300">
-                <span className="inline-block w-2 h-2 rounded-full bg-blue-500 animate-pulse-glow" />
-                <span className="text-xs">Realtime chat, presence, typing and unread</span>
-              </div>
-              <h1 className="hero-heading text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                Motion that clarifies a real-time system
-              </h1>
-              <p className="hero-subheading text-slate-600 dark:text-slate-300 max-w-lg">
-                Presence, typing, grouped messages, feedback and resilience — expressed with motion for clarity and trust.
-              </p>
-              <div className="flex items-center gap-3">
-                <MLink
-                  id="cta"
-                  href={ctaHref}
-                  className="hero-cta inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold bg-blue-600 text-white hover:bg-blue-700 transition"
-                  target="_blank"
-                  rel="noreferrer"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <span>Experience it live</span>
-                  <ArrowRight aria-hidden="true" />
-                </MLink>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
-                  onClick={() => {
-                    const section = document.getElementById("orientation");
-                    if (section) section.scrollIntoView({ behavior: "smooth" });
-                  }}
-                >
-                  <span>Preview the narrative</span>
-                </button>
-              </div>
-              <dl className="hero-metadata grid grid-cols-2 gap-4">
-                <div>
-                  <dt className="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Presence</dt>
-                  <dd className="text-sm text-slate-700 dark:text-slate-200">Online, away, offline</dd>
-                </div>
-                <div>
-                  <dt className="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Messages</dt>
-                  <dd className="text-sm text-slate-700 dark:text-slate-200">Grouped by sender and date</dd>
-                </div>
-              </dl>
+    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-slate-50 dark:bg-slate-950 selection:bg-indigo-500/30">
+      {/* Background Elements */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] rounded-full bg-indigo-500/10 blur-[120px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] rounded-full bg-purple-500/10 blur-[120px]" />
+        <div className="absolute top-[40%] left-[30%] w-[40%] h-[40%] rounded-full bg-pink-500/10 blur-[100px]" />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          
+          {/* Text Content */}
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col gap-6 max-w-2xl"
+          >
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-200 dark:border-indigo-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm w-fit"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+              </span>
+              <span className="text-xs font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wide">
+                v2.0 Now Available
+              </span>
+            </motion.div>
+
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.1]">
+              Cinema meets <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400">
+                Connection
+              </span>
+            </h1>
+            
+            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
+              Discover movies, create watchlists, and chat with friends in real-time. 
+              The ultimate social platform for film enthusiasts.
+            </p>
+
+            <div className="flex flex-wrap gap-4 mt-2">
+              <motion.a
+                href="https://cubewin07.github.io/movie-explorer"
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-bold bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl hover:shadow-2xl transition-all"
+              >
+                <span>Start Exploring</span>
+                <ArrowRight className="w-5 h-5" />
+              </motion.a>
+              
+              <motion.button
+                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-bold bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all"
+              >
+                <span>See Features</span>
+                <PlayCircle className="w-5 h-5" />
+              </motion.button>
             </div>
-            <div className="flex justify-start lg:justify-end">
-              <div className="w-full max-w-sm p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-gradient-to-br from-white/80 to-slate-50/60 dark:from-slate-900/70 dark:to-slate-900/40 shadow-xl">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
-                    <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
-                    <span className="text-xs text-slate-700 dark:text-slate-200">Mia from Movie Explorer</span>
-                  </div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">Now</span>
-                </div>
-                <div className="grid gap-2">
-                  <div className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 px-3 py-2 max-w-[75%]">
-                    Welcome to Movie Explorer. Real-time chat connected end-to-end.
-                  </div>
-                  <div className="rounded-2xl border border-blue-300/60 dark:border-blue-800/60 bg-blue-600/90 text-white px-3 py-2 max-w-[75%] justify-self-end">
-                    Presence, typing, unread and offline in one UI.
-                  </div>
-                  <div className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 px-3 py-2 max-w-[75%]">
-                    <span className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300">
-                      <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" />
-                      <span className="w-2 h-2 rounded-full bg-pink-500 animate-bounce" />
-                      <span className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" />
-                    </span>
-                  </div>
-                </div>
+
+            <div className="flex items-center gap-8 pt-8 border-t border-slate-200 dark:border-slate-800">
+              <div>
+                <p className="text-3xl font-bold text-slate-900 dark:text-white">10K+</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Movies Indexed</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-slate-900 dark:text-white">Real-time</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Chat & Status</p>
               </div>
             </div>
+          </motion.div>
+
+          {/* Visual Content - 3D Composition */}
+          <div className="relative h-[600px] hidden lg:block perspective-1000">
+            {/* Floating Chat Interface */}
+            <motion.div 
+              style={{ y: y1, rotateY: -10, rotateX: 5 }}
+              className="absolute top-10 right-10 z-20 w-[350px]"
+            >
+               <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[2rem] blur opacity-30 group-hover:opacity-60 transition duration-1000"></div>
+                  <MockChatInterface />
+               </div>
+            </motion.div>
+
+            {/* Floating Movie Cards */}
+            <motion.div 
+              style={{ y: y2, x: -50, rotateY: 10, rotateX: -5 }}
+              className="absolute top-40 left-0 z-10"
+            >
+              <div className="space-y-6">
+                <MockMovieCard 
+                  title="Dune: Part Two"
+                  year="2024"
+                  rating="8.9"
+                  image="https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg"
+                  genre="Sci-Fi"
+                />
+                <div className="translate-x-12">
+                   <MockMovieCard 
+                    title="Oppenheimer"
+                    year="2023"
+                    rating="8.6"
+                    image="https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
+                    genre="Drama"
+                  />
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>
+      
+      {/* Scroll Indicator */}
+      <motion.div 
+        style={{ opacity }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-400"
+      >
+        <span className="text-xs uppercase tracking-widest">Scroll</span>
+        <div className="w-1 h-12 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+          <motion.div 
+            animate={{ y: [0, 48, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-full h-1/2 bg-indigo-500 rounded-full"
+          />
+        </div>
+      </motion.div>
     </section>
   );
 }

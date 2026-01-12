@@ -1,46 +1,55 @@
 import Section from "../Section";
-import { MessageCircle } from "lucide-react";
+import MockChatInterface from "../ui/MockChatInterface";
+import { motion } from "framer-motion";
 
 export default function Connection() {
   return (
-    <Section id="connection" eyebrow="Connection" heading="Friends morph into active conversation" act="connection">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4 grid gap-3" data-reveal>
-          <div className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 p-3 list-item">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold grid place-items-center">AL</div>
-              <p className="font-semibold text-slate-900 dark:text-white">Alex Rivera</p>
-              <span className="ml-auto inline-flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
-                <MessageCircle className="w-4 h-4" />
-                Online
-              </span>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 p-3">
-            <div className="grid gap-2">
-              <div className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 px-3 py-2 max-w-[75%] list-item">
-                Want to binge something cyberpunk tonight?
-              </div>
-              <div className="rounded-2xl border border-blue-300/60 dark:border-blue-800/60 bg-blue-600/90 text-white px-3 py-2 max-w-[75%] justify-self-end list-item">
-                Yes, queue up season 1 and I will join in 10.
-              </div>
-              <div className="rounded-2xl border border-blue-300/60 dark:border-blue-800/60 bg-blue-600/90 text-white px-3 py-2 max-w-[75%] justify-self-end list-item">
-                Chat stays pinned to watchlist, we never lose the thread.
-              </div>
-            </div>
-          </div>
+    <Section 
+      id="connection" 
+      eyebrow="Real-time Community" 
+      heading="Connect with friends instantly"
+    >
+      <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="order-2 lg:order-1">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+             <MockChatInterface />
+          </motion.div>
         </div>
-        <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4 grid gap-3" data-reveal>
-          <div className="grid gap-2">
-            <div className="rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-3 flex items-center justify-between">
-              <p className="font-semibold text-slate-900 dark:text-white">Date separator</p>
-              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">Today</span>
+        
+        <div className="order-1 lg:order-2 space-y-8">
+            <div className="space-y-4">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Seamless Conversation</h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Discuss plot twists, recommend hidden gems, and plan movie nights directly within the app. 
+                    Our WebSocket-powered chat ensures your messages are delivered instantly.
+                </p>
             </div>
-            <div className="rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-3 flex items-center justify-between">
-              <p className="font-semibold text-slate-900 dark:text-white">Pending → Delivered</p>
-              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300">Status</span>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                    { title: "Typing Indicators", desc: "See when friends are replying" },
+                    { title: "Read Receipts", desc: "Know when your message is seen" },
+                    { title: "Presence Status", desc: "Check who is online now" },
+                    { title: "Group Chats", desc: "Create squads for genres" }
+                ].map((feature, i) => (
+                    <motion.div 
+                        key={feature.title}
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 }}
+                        className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow"
+                    >
+                        <h4 className="font-semibold text-slate-900 dark:text-white mb-1">{feature.title}</h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">{feature.desc}</p>
+                    </motion.div>
+                ))}
             </div>
-          </div>
         </div>
       </div>
     </Section>
