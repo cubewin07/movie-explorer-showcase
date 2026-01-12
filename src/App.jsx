@@ -1,15 +1,17 @@
 import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { MessageCircle, ArrowRight, Search } from "lucide-react";
 import "./App.css";
 
-function Section({ id, heading, eyebrow, children }) {
+function Section({ id, heading, eyebrow, act, children }) {
   return (
-    <section id={id} className="section">
-      <div className="container">
-        <div className="section-header">
-          <p className="section-eyebrow">{eyebrow}</p>
-          <h2 className="section-heading">{heading}</h2>
+    <section id={id} className="act py-24 border-b border-slate-200/60 dark:border-slate-800/60" data-act={act}>
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <p className="text-xs tracking-widest uppercase text-slate-500 dark:text-slate-400">{eyebrow}</p>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">{heading}</h2>
         </div>
-        <div className="section-body">{children}</div>
+        <div className="flex flex-col gap-6">{children}</div>
       </div>
     </section>
   );
@@ -17,6 +19,7 @@ function Section({ id, heading, eyebrow, children }) {
 
 function App() {
   const rootRef = useRef(null);
+  const MLink = motion.a;
 
   useEffect(() => {
     if (window.gsap && window.ScrollTrigger) {
@@ -108,6 +111,110 @@ function App() {
           },
         });
       });
+
+      window.gsap.utils.toArray(".act").forEach((section) => {
+        const act = section.getAttribute("data-act");
+        const tl = window.gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: "bottom+=40% top",
+            scrub: true,
+            pin: true,
+          },
+        });
+
+        if (act === "orientation") {
+          tl
+            .fromTo(
+              section.querySelectorAll(".presence"),
+              { opacity: 0, y: 40, scale: 0.95 },
+              { opacity: 1, y: 0, scale: 1, stagger: 0.2, ease: "power3.out" },
+            )
+            .to(section.querySelectorAll(".status-dot"), {
+              scale: 1.2,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+              duration: 1.2,
+            });
+        }
+
+        if (act === "discovery") {
+          const friend = section.querySelector(".steps");
+          const chat = section.querySelector(".chat");
+          tl
+            .fromTo(friend, { scale: 0.98, opacity: 0 }, { scale: 1, opacity: 1 })
+            .to(friend, {
+              filter: "brightness(0.9)",
+              duration: 0.6,
+              ease: "power2.out",
+            })
+            .fromTo(
+              chat,
+              { x: 60, opacity: 0 },
+              { x: 0, opacity: 1, ease: "power2.out" },
+            )
+            .fromTo(
+              section.querySelectorAll(".bubble"),
+              { y: 20, opacity: 0 },
+              { y: 0, opacity: 1, stagger: 0.15, ease: "power3.out" },
+            );
+        }
+
+        if (act === "connection") {
+          const counter = section.querySelector(".unread-counter");
+          if (counter) {
+            const digits = counter.querySelectorAll(".digit");
+            tl.to(digits, {
+              yPercent: -100,
+              stagger: 0.05,
+              duration: 0.6,
+              ease: "power3.out",
+            });
+          }
+          tl.fromTo(
+            section.querySelectorAll(".list-item"),
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, stagger: 0.12, ease: "power3.out" },
+          );
+        }
+
+        if (act === "feedback") {
+          tl.fromTo(
+            section.querySelectorAll(".feedback-item"),
+            { opacity: 0, y: 18 },
+            { opacity: 1, y: 0, stagger: 0.12, duration: 0.5, ease: "power3.out" },
+          );
+        }
+
+        if (act === "resilience") {
+          tl
+            .to(section, {
+              filter: "saturate(0.6)",
+              duration: 0.8,
+              ease: "power2.out",
+            })
+            .fromTo(
+              section.querySelector(".banner"),
+              { opacity: 0, y: 20 },
+              { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+            )
+            .to(section, {
+              filter: "saturate(1)",
+              duration: 0.8,
+              ease: "power2.out",
+            });
+        }
+
+        if (act === "cohesion") {
+          tl.fromTo(
+            section.querySelectorAll("[data-reveal]"),
+            { opacity: 0, y: 24 },
+            { opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: "power3.out" },
+          );
+        }
+      });
     }, rootRef);
 
     return () => {
@@ -125,91 +232,77 @@ function App() {
 
   return (
     <main ref={rootRef}>
-      <section className="hero">
-        <div className="container">
-          <div className="hero-card">
-            <div className="hero-layout">
-              <div className="hero-copy">
-                <div className="hero-badge">
-                  <span className="hero-dot" />
-                  <span>Realtime chat, presence and unread built in React</span>
+      <section className="py-20">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-3xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/60 dark:border-slate-800/60 shadow-2xl">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-8 lg:p-12">
+              <div className="flex flex-col gap-5">
+                <div className="hero-badge inline-flex items-center gap-3 px-3 py-2 rounded-full border border-slate-200/60 dark:border-slate-700/60 bg-slate-50/70 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300">
+                  <span className="inline-block w-2 h-2 rounded-full bg-blue-500 animate-pulse-glow" />
+                  <span className="text-xs">Realtime chat, presence, typing and unread</span>
                 </div>
-                <h1 className="heading hero-heading">
-                  Movie Explorer chat that feels alive, not static.
+                <h1 className="hero-heading text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                  Motion that clarifies a real-time system
                 </h1>
-                <p className="subheading hero-subheading">
-                  Presence, typing, grouped messages and offline states, all wired
-                  into a production React app. Scroll through the states, then jump
-                  straight into the real experience.
+                <p className="hero-subheading text-slate-600 dark:text-slate-300 max-w-lg">
+                  Presence, typing, grouped messages, feedback and resilience — expressed with motion for clarity and trust.
                 </p>
-                <div className="cta-row hero-cta">
-                  <a
+                <div className="flex items-center gap-3">
+                  <MLink
                     id="cta"
                     href={ctaHref}
-                    className="btn"
+                    className="hero-cta inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold bg-blue-600 text-white hover:bg-blue-700 transition"
                     target="_blank"
                     rel="noreferrer"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <span>Open Movie Explorer</span>
-                    <span aria-hidden="true">↗</span>
-                  </a>
+                    <span>Experience it live</span>
+                    <ArrowRight aria-hidden="true" />
+                  </MLink>
                   <button
                     type="button"
-                    className="btn secondary"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
                     onClick={() => {
-                      const section = document.getElementById("friends");
-                      if (section) {
-                        section.scrollIntoView({ behavior: "smooth" });
-                      }
+                      const section = document.getElementById("orientation");
+                      if (section) section.scrollIntoView({ behavior: "smooth" });
                     }}
                   >
-                    <span>Preview chat states</span>
+                    <span>Preview the narrative</span>
                   </button>
                 </div>
-                <dl className="hero-metadata">
+                <dl className="hero-metadata grid grid-cols-2 gap-4">
                   <div>
-                    <dt>Presence</dt>
-                    <dd>Online, away, offline</dd>
+                    <dt className="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Presence</dt>
+                    <dd className="text-sm text-slate-700 dark:text-slate-200">Online, away, offline</dd>
                   </div>
                   <div>
-                    <dt>Messages</dt>
-                    <dd>Grouped by sender and date</dd>
-                  </div>
-                  <div>
-                    <dt>Typing</dt>
-                    <dd>Live composer feedback</dd>
-                  </div>
-                  <div>
-                    <dt>Network</dt>
-                    <dd>Offline and retry flows</dd>
+                    <dt className="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Messages</dt>
+                    <dd className="text-sm text-slate-700 dark:text-slate-200">Grouped by sender and date</dd>
                   </div>
                 </dl>
               </div>
-              <div className="hero-preview">
-                <div className="hero-preview-shell">
-                  <div className="hero-preview-header">
-                    <div className="hero-presence-pill">
-                      <span className="status-dot status-online" />
-                      <span className="name">Mia from Movie Explorer</span>
+              <div className="flex justify-start lg:justify-end">
+                <div className="w-full max-w-sm p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-gradient-to-br from-white/80 to-slate-50/60 dark:from-slate-900/70 dark:to-slate-900/40 shadow-xl">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
+                      <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
+                      <span className="text-xs text-slate-700 dark:text-slate-200">Mia from Movie Explorer</span>
                     </div>
-                    <span className="muted">Now</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">Now</span>
                   </div>
-                  <div className="chat">
-                    <div className="bubble left">
-                      Welcome to Movie Explorer. This is what real-time chat looks
-                      like when everything is connected.
+                  <div className="grid gap-2">
+                    <div className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 px-3 py-2 max-w-[75%]">
+                      Welcome to Movie Explorer. Real-time chat connected end-to-end.
                     </div>
-                    <div className="bubble right">
-                      Presence, typing, unread and offline all live in one UI.
+                    <div className="rounded-2xl border border-blue-300/60 dark:border-blue-800/60 bg-blue-600/90 text-white px-3 py-2 max-w-[75%] justify-self-end">
+                      Presence, typing, unread and offline in one UI.
                     </div>
-                    <div className="bubble left">
-                      Try opening a conversation in the main app to see it live.
-                    </div>
-                    <div className="bubble left">
-                      <span className="typing">
-                        <span className="dot" />
-                        <span className="dot" />
-                        <span className="dot" />
+                    <div className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 px-3 py-2 max-w-[75%]">
+                      <span className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-300">
+                        <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" />
+                        <span className="w-2 h-2 rounded-full bg-pink-500 animate-bounce" />
+                        <span className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" />
                       </span>
                     </div>
                   </div>
@@ -220,260 +313,172 @@ function App() {
         </div>
       </section>
 
-      <Section
-        id="friends"
-        eyebrow="Friends & presence"
-        heading="See who is online before you send."
-      >
-        <div className="grid friends-grid">
-          <div className="card" data-reveal>
-            <div className="presence">
-              <div className="avatar">AL</div>
-              <div>
-                <div className="name">Alex Rivera</div>
-                <div className="muted">On web • Watching trending sci-fi</div>
+      <Section id="orientation" eyebrow="Orientation" heading="Layout assembles and explains hierarchy" act="orientation">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="presence rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold grid place-items-center">AL</div>
+              <div className="flex-1">
+                <p className="font-bold text-slate-900 dark:text-white">Alex Rivera</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300">On web • Trending sci‑fi</p>
               </div>
-              <span className="status-dot status-online" />
-            </div>
-            <p className="muted">
-              Friend presence is synced from the backend, so online and away
-              states stay accurate as people move across pages.
-            </p>
-          </div>
-          <div className="card" data-reveal>
-            <div className="presence">
-              <div className="avatar">JP</div>
-              <div>
-                <div className="name">Jordan Park</div>
-                <div className="muted">On mobile • Browsing watchlist</div>
-              </div>
-              <span className="status-dot status-away" />
-            </div>
-            <p className="muted">
-              Presence ties into watchlists and discovery, so you can see what
-              friends are exploring before you start a chat.
-            </p>
-          </div>
-          <div className="card" data-reveal>
-            <div className="presence">
-              <div className="avatar">SY</div>
-              <div>
-                <div className="name">Samir Yao</div>
-                <div className="muted">Last seen 12 min ago</div>
-              </div>
-              <span className="status-dot status-offline" />
-            </div>
-            <p className="muted">
-              Offline and last-seen states reuse the same connection layer that
-              powers notifications and chat delivery.
-            </p>
-          </div>
-        </div>
-      </Section>
-
-      <Section
-        id="create-chat"
-        eyebrow="Create chat flow"
-        heading="From discovery to conversation in three steps."
-      >
-        <div className="grid">
-          <div className="card steps" data-reveal>
-            <div className="step">
-              <div className="step-num">1</div>
-              <div>
-                <div className="name">Pick a friend</div>
-                <p className="muted">
-                  Start from the friends list or a profile card, backed by the
-                  same social graph as the main app.
-                </p>
-              </div>
-            </div>
-            <div className="step">
-              <div className="step-num">2</div>
-              <div>
-                <div className="name">Confirm the conversation</div>
-                <p className="muted">
-                  The backend ensures you are allowed to chat and creates or
-                  reuses the correct thread.
-                </p>
-              </div>
-            </div>
-            <div className="step">
-              <div className="step-num">3</div>
-              <div>
-                <div className="name">Start typing</div>
-                <p className="muted">
-                  Composer connects to real-time typing indicators and grouped
-                  messages instantly.
-                </p>
-              </div>
+              <span className="status-dot w-2 h-2 rounded-full bg-green-500" />
             </div>
           </div>
-          <div className="card" data-reveal>
-            <div className="chat">
-              <div className="bubble left">
-                Want to binge something cyberpunk tonight?
+          <div className="presence rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-orange-500 text-white font-bold grid place-items-center">JP</div>
+              <div className="flex-1">
+                <p className="font-bold text-slate-900 dark:text-white">Jordan Park</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300">On mobile • Watchlist</p>
               </div>
-              <div className="bubble right">
-                Yes, queue up season 1 and I will join in 10.
+              <span className="status-dot w-2 h-2 rounded-full bg-yellow-500" />
+            </div>
+          </div>
+          <div className="presence rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 text-white font-bold grid place-items-center">SY</div>
+              <div className="flex-1">
+                <p className="font-bold text-slate-900 dark:text-white">Samir Yao</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300">Last seen 12 min ago</p>
               </div>
-              <div className="bubble right">
-                Chat stays pinned to your watchlist, so we never lose the thread.
-              </div>
+              <span className="status-dot w-2 h-2 rounded-full bg-red-500" />
             </div>
           </div>
         </div>
       </Section>
 
-      <Section
-        id="conversation"
-        eyebrow="Conversation showcase"
-        heading="Grouped messages that stay readable as threads grow."
-      >
-        <div className="grid">
-          <div className="card" data-reveal>
-            <div className="list">
-              <div className="list-item">
-                <div>
-                  <div className="name">Grouping by sender</div>
-                  <p className="muted">
-                    Consecutive messages from the same person collapse into a single
-                    block, exactly like in the main chat UI.
-                  </p>
-                </div>
-                <span className="badge">Today</span>
+      <Section id="discovery" eyebrow="Discovery" heading="Search and cards reveal intent before action" act="discovery">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="steps rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search for movies, people, genres"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+              />
+            </div>
+            <p className="text-sm mt-3 text-slate-600 dark:text-slate-300">Preview shows outcomes without commitment.</p>
+          </div>
+          <div className="chat rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4 grid gap-3" data-reveal>
+            <div className="rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-3 hover:shadow-lg transition">
+              <p className="font-semibold text-slate-900 dark:text-white">Feature Card</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300">Hover hints at action, selection isolates focus.</p>
+            </div>
+            <div className="rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-3 hover:shadow-lg transition">
+              <p className="font-semibold text-slate-900 dark:text-white">Trending Card</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300">Relevance-driven animation improves scanability.</p>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      <Section id="connection" eyebrow="Connection" heading="Friends morph into active conversation" act="connection">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4 grid gap-3" data-reveal>
+            <div className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 p-3 list-item">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold grid place-items-center">AL</div>
+                <p className="font-semibold text-slate-900 dark:text-white">Alex Rivera</p>
+                <span className="ml-auto inline-flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
+                  <MessageCircle className="w-4 h-4" />
+                  Online
+                </span>
               </div>
-              <div className="list-item">
-                <div>
-                  <div className="name">Date separators</div>
-                  <p className="muted">
-                    Readable dividers show when a new day begins, matching how
-                    movie nights naturally split across evenings.
-                  </p>
+            </div>
+            <div className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 p-3">
+              <div className="grid gap-2">
+                <div className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 px-3 py-2 max-w-[75%] list-item">
+                  Want to binge something cyberpunk tonight?
                 </div>
-                <span className="badge">Date</span>
-              </div>
-              <div className="list-item">
-                <div>
-                  <div className="name">Pending and delivered</div>
-                  <p className="muted">
-                    Pending messages animate in place and resolve when the backend
-                    confirms delivery.
-                  </p>
+                <div className="rounded-2xl border border-blue-300/60 dark:border-blue-800/60 bg-blue-600/90 text-white px-3 py-2 max-w-[75%] justify-self-end list-item">
+                  Yes, queue up season 1 and I will join in 10.
                 </div>
-                <span className="badge">Status</span>
+                <div className="rounded-2xl border border-blue-300/60 dark:border-blue-800/60 bg-blue-600/90 text-white px-3 py-2 max-w-[75%] justify-self-end list-item">
+                  Chat stays pinned to watchlist, we never lose the thread.
+                </div>
               </div>
             </div>
           </div>
-          <div className="card" data-reveal>
-            <div className="chat">
-              <div className="bubble left">
-                Timeline uses transforms and opacity only, so scrolling stays
-                smooth even on long conversations.
+          <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4 grid gap-3" data-reveal>
+            <div className="grid gap-2">
+              <div className="rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-3 flex items-center justify-between">
+                <p className="font-semibold text-slate-900 dark:text-white">Date separator</p>
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">Today</span>
               </div>
-              <div className="bubble right">
-                Scroll-to-bottom behavior matches the real ChatConversation
-                component in Movie Explorer.
+              <div className="rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-3 flex items-center justify-between">
+                <p className="font-semibold text-slate-900 dark:text-white">Pending → Delivered</p>
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300">Status</span>
               </div>
             </div>
           </div>
         </div>
       </Section>
 
-      <Section
-        id="notifications"
-        eyebrow="Notifications & unread"
-        heading="See what matters at a glance, not after a reload."
-      >
-        <div className="grid">
-          <div className="card" data-reveal>
-            <div className="list">
-              <div className="list-item">
-                <div>
-                  <div className="name">Unread counts</div>
-                  <p className="muted">
-                    Conversation list badges update in real time when new messages
-                    arrive in any thread.
-                  </p>
-                </div>
-                <span className="badge">3</span>
-              </div>
-              <div className="list-item">
-                <div>
-                  <div className="name">New message ping</div>
-                  <p className="muted">
-                    Subtle micro-interactions draw your eye without interrupting
-                    what you are watching.
-                  </p>
-                </div>
-                <span className="badge">•</span>
-              </div>
+      <Section id="feedback" eyebrow="Feedback" heading="Micro-interactions clarify outcomes" act="feedback">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4 grid gap-3" data-reveal>
+            <div className="feedback-item flex items-center justify-between rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-3">
+              <p className="font-semibold text-slate-900 dark:text-white">Unread count</p>
+              <span className="unread-counter relative overflow-hidden inline-flex px-2 py-1 rounded-full bg-pink-100 text-pink-700 dark:bg-pink-950/40 dark:text-pink-300">
+                <span className="digit">0</span>
+                <span className="digit">1</span>
+                <span className="digit">2</span>
+                <span className="digit">3</span>
+                <span className="digit">4</span>
+                <span className="digit">5</span>
+                <span className="digit">6</span>
+                <span className="digit">7</span>
+                <span className="digit">8</span>
+                <span className="digit">9</span>
+              </span>
+            </div>
+            <div className="feedback-item flex items-center justify-between rounded-xl border border-slate-200/60 dark:border-slate-700/60 p-3">
+              <p className="font-semibold text-slate-900 dark:text-white">New message ping</p>
+              <span className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
+                <span>•</span>
+              </span>
             </div>
           </div>
-          <div className="card" data-reveal>
-            <p className="muted">
-              Unread state is computed from the same message stream as the
-              conversation itself, so badges stay in sync even when you switch
-              devices or refresh.
+          <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Feedback stays in sync with the same message stream and presence signals used by chat.
             </p>
           </div>
         </div>
       </Section>
 
-      <Section
-        id="offline"
-        eyebrow="Offline & error states"
-        heading="Graceful fallbacks when the network drops."
-      >
-        <div className="grid">
-          <div className="card" data-reveal>
-            <div className="banner">
-              <span aria-hidden="true">⚠️</span>
+      <Section id="resilience" eyebrow="Resilience" heading="Offline transitions and recovery" act="resilience">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
+            <div className="flex items-center gap-3 rounded-xl border border-red-300/60 dark:border-red-900/60 bg-red-100/60 dark:bg-red-950/40 p-3 text-red-800 dark:text-red-300">
+              <span>⚠️</span>
               <div>
-                <div className="name">You are offline</div>
-                <p className="muted">
-                  Messages stay queued locally until the WebSocket reconnects. The
-                  main app uses this state to avoid losing drafts.
-                </p>
+                <p className="font-semibold">You are offline</p>
+                <p className="text-sm">Messages queue until reconnection restores flow.</p>
               </div>
             </div>
           </div>
-          <div className="card" data-reveal>
-            <p className="muted">
-              Error banners, retry buttons and disabled send states all map
-              directly to the ChatConversation logic in the production app.
+          <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Error banners, retry and disabled states map to the production chat logic.
             </p>
           </div>
         </div>
       </Section>
 
-      <Section
-        id="design"
-        eyebrow="Design system & accessibility"
-        heading="The same design tokens that power Movie Explorer."
-      >
-        <div className="grid">
-          <div className="card tokens" data-reveal>
-            <div className="token">
-              <div className="name">Motion tokens</div>
-              <p className="muted">
-                Timings and easings are tuned to feel quick but readable, with
-                support for reduced motion preferences.
-              </p>
-            </div>
-            <div className="token">
-              <div className="name">Color system</div>
-              <p className="muted">
-                Background, surface and accent colors stay consistent with the main
-                app&apos;s dark UI.
-              </p>
-            </div>
+      <Section id="cohesion" eyebrow="Cohesion" heading="Repeated motion patterns and shared tokens" act="cohesion">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Timings and easings repeat across features with reduced-motion support.
+            </p>
           </div>
-          <div className="card" data-reveal>
-            <p className="muted">
-              Sections use semantic HTML, keyboard-focusable CTAs and visible focus
-              rings. The showcase keeps the same accessibility goals as the core
-              product.
+          <div className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-900/80 p-4" data-reveal>
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Color, elevation and shape tokens match the product&apos;s dark UI.
             </p>
           </div>
         </div>

@@ -184,6 +184,23 @@ body {
   display: grid;
   gap: 10px;
 }
+.unread-counter {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  width: fit-content;
+  overflow: hidden;
+}
+.digit {
+  display: inline-block;
+  color: white;
+  font-weight: 800;
+  transform: translateY(0%);
+}
 .bubble {
   max-width: 70%;
   padding: 10px 14px;
@@ -247,6 +264,20 @@ body {
   font-weight: 700;
   color: white;
   background: linear-gradient(135deg, var(--accent), var(--primary-2));
+}
+
+.act[data-act] {
+  position: relative;
+}
+.act[data-act]::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+  background:
+    radial-gradient(600px 260px at 10% 0%, rgba(109,124,255,0.12), transparent 60%),
+    radial-gradient(500px 220px at 90% 0%, rgba(160,109,255,0.10), transparent 60%);
+  opacity: 0.6;
 }
 
 .banner {
