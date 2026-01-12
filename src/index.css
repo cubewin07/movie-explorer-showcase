@@ -50,7 +50,7 @@
   }
 
   body {
-    @apply bg-gradient-to-b from-white via-slate-100 to-slate-200 text-slate-900;
+    @apply bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
       "SF Pro Display", "Segoe UI", sans-serif;
   }
