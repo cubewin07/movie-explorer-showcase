@@ -1,14 +1,45 @@
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ArrowRight, PlayCircle, MessageCircle, Star } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowRight, PlayCircle } from "lucide-react";
 import MockMovieCard from "./ui/MockMovieCard";
 import MockChatInterface from "./ui/MockChatInterface";
+import { useTrendingMovies } from "../hooks/useMovies";
 
 export default function Hero() {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
   const y2 = useTransform(scrollY, [0, 500], [0, -150]);
-  
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+
+  const { data: movies } = useTrendingMovies();
+
+  // Helper to map TMDB genre IDs to strings (simplified for showcase)
+  const getGenre = (genreIds) => {
+    if (!genreIds || genreIds.length === 0) return "Movie";
+    const genres = {
+      28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",
+      80: "Crime", 99: "Documentary", 18: "Drama", 10751: "Family",
+      14: "Fantasy", 36: "History", 27: "Horror", 10402: "Music",
+      9648: "Mystery", 10749: "Romance", 878: "Sci-Fi", 10770: "TV Movie",
+      53: "Thriller", 10752: "War", 37: "Western"
+    };
+    return genres[genreIds[0]] || "Movie";
+  };
+
+  const movie1 = movies?.[0] || {
+    title: "Dune: Part Two",
+    release_date: "2024",
+    vote_average: 8.9,
+    poster_path: "/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
+    genre_ids: [878]
+  };
+
+  const movie2 = movies?.[1] || {
+    title: "Oppenheimer",
+    release_date: "2023",
+    vote_average: 8.6,
+    poster_path: "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+    genre_ids: [18]
+  };
 
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-slate-50 dark:bg-slate-950 selection:bg-indigo-500/30">
@@ -112,19 +143,19 @@ export default function Hero() {
             >
               <div className="space-y-6">
                 <MockMovieCard 
-                  title="Dune: Part Two"
-                  year="2024"
-                  rating="8.9"
-                  image="https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg"
-                  genre="Sci-Fi"
+                  title={movie1.title}
+                  year={movie1.release_date?.split('-')[0]}
+                  rating={movie1.vote_average?.toFixed(1)}
+                  image={`https://image.tmdb.org/t/p/w500${movie1.poster_path}`}
+                  genre={getGenre(movie1.genre_ids)}
                 />
                 <div className="translate-x-12">
                    <MockMovieCard 
-                    title="Oppenheimer"
-                    year="2023"
-                    rating="8.6"
-                    image="https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg"
-                    genre="Drama"
+                    title={movie2.title}
+                    year={movie2.release_date?.split('-')[0]}
+                    rating={movie2.vote_average?.toFixed(1)}
+                    image={`https://image.tmdb.org/t/p/w500${movie2.poster_path}`}
+                    genre={getGenre(movie2.genre_ids)}
                   />
                 </div>
               </div>
