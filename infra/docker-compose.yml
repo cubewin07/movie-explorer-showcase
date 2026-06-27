@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # 1. Cơ sở dữ liệu Neo4j cho Graphiti (Temporal Knowledge Graph)
+  neo4j:
+    image: neo4j:latest
+    container_name: agentos-neo4j
+    ports:
+      - "7474:7474" # Giao diện Web (HTTP)
+      - "7687:7687" # Giao thức Bolt (Python Client kết nối)
+    environment:
+      - NEO4J_AUTH=neo4j/your_neo4j_password_here
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    restart: unless-stopped
+
+  # 2. Cơ sở dữ liệu PostgreSQL tích hợp pgvector cho CocoIndex (RAG Pipeline)
+  postgres-vector:
+    image: pgvector/pgvector:pg16
+    container_name: agentos-postgres-vector
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=cocoindex
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
+  postgres_data:

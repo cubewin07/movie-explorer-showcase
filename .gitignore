@@ -12,6 +12,17 @@ dist
 dist-ssr
 *.local
 
+# --- Agent tooling ---
+# Upstream skill source clones: large (~300MB) and regenerable via
+# tooling/scripts/fetch-sources.sh (pinned to verified commits). Do not commit.
+tooling/sources/
+
+# Config dependencies are restored from the committed lockfile.
+tooling/config/node_modules/
+
+# Local/secret config (commit tooling/config/.env.example instead).
+tooling/config/.env
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
